@@ -9,7 +9,9 @@ import {
   Container,
   HStack,
   Button,
-  Text
+  Text,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 
 const Coins = () => {
@@ -28,7 +30,7 @@ const Coins = () => {
         const { data } = await axios.get(
           `${server}/coins/markets?vs_currency=${currency}&page=${page}`
         );
-        console.log(data);
+        // console.log(data);
         setCoin(data);
         setLoading(false);
       } catch (e) {
@@ -42,16 +44,15 @@ const Coins = () => {
   if (error) return <ErrorComponent msg="Error While Fetching Coins" />;
 
   const changePage = (p) => {
-    if(p <= 131){
-setPage(p+1);
-    setLoading(true);
-    }else{
-        setPage(1);
-        setLoading(true);
+    if (p <= 131) {
+      setPage(p + 1);
+      setLoading(true);
+    } else {
+      setPage(1);
+      setLoading(true);
     }
-    
   };
-//   const btns = new Array(132).fill(1);
+  //   const btns = new Array(132).fill(1);
 
   return (
     <Container maxW="container.xl">
@@ -59,7 +60,14 @@ setPage(p+1);
         <Loader />
       ) : (
         <>
-          <HStack wrap="wrap">
+          <RadioGroup value={currency} onChange={setCurrency} p="8">
+            <HStack spacing={"4"}>
+              <Radio value="inr">₹ INR</Radio>
+              <Radio value="eur">€ EUR</Radio>
+              <Radio value="usd">$ USD</Radio>
+            </HStack>
+          </RadioGroup>
+          <HStack wrap="wrap" justifyContent={"space-evenly"}>
             {coin?.map((i, index) => (
               <CoinCard
                 key={i?.id}
@@ -72,8 +80,8 @@ setPage(p+1);
               />
             ))}
           </HStack>
-               
-          <HStack w="full" p="8" alignItems='center' justifyContent='center'>
+
+          <HStack w="full" p="8" alignItems="center" justifyContent="center">
             {/* {btns?.map((item, index) => (
               <Button
                 key={index}
@@ -86,13 +94,13 @@ setPage(p+1);
             ))} */}
             <Text> Page {page}</Text>
             <Button
-                variant="ghost"
-                bgColor={"blackAlpha.400"}
-                color="white"
-                onClick={() => changePage(page+1)}
-              >
-                {page < 132 ? `Next` : `End`}
-              </Button>
+              variant="ghost"
+              bgColor={"blackAlpha.400"}
+              color="white"
+              onClick={() => changePage(page + 1)}
+            >
+              {page < 132 ? `Next` : `End`}
+            </Button>
           </HStack>
         </>
       )}
